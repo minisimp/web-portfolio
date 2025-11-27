@@ -1,4 +1,5 @@
 import { Box, Button, Stack, Typography, Paper } from "@mui/material";
+import { Link as RouterLink } from "react-router-dom";
 
 export default function Home() {
   return (
@@ -35,15 +36,26 @@ export default function Home() {
 
           <Typography variant="body1" sx={{ color: "text.secondary", mb: 4 }}>
             IT contractor turned web dev & AI tinkerer. I like turning messy,
-            real-world problems into clean, reliable tools that people
-            actually use.
+            real-world problems into clean, reliable tools that people actually
+            use.
           </Typography>
 
           <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-            <Button variant="contained" size="large">
+            <Button
+              component={RouterLink}
+              to="/projects"
+              variant="contained"
+              size="large"
+              onClick={() => {}}
+            >
               View Projects
             </Button>
-            <Button variant="outlined" size="large">
+            <Button
+              component={RouterLink}
+              to="/about"
+              variant="outlined"
+              size="large"
+            >
               About Me
             </Button>
           </Stack>
@@ -59,15 +71,18 @@ export default function Home() {
                 "radial-gradient(circle at top left, rgba(247,37,133,0.22), transparent 55%), radial-gradient(circle at bottom right, rgba(72,149,239,0.3), transparent 55%)",
             }}
           >
-            <Typography variant="subtitle2" sx={{ mb: 2, color: "text.secondary" }}>
+            <Typography
+              variant="subtitle2"
+              sx={{ mb: 2, color: "text.secondary" }}
+            >
               Coming soon
             </Typography>
             <Typography variant="h6" sx={{ mb: 1 }}>
               Portfolio Dashboard
             </Typography>
             <Typography variant="body2" sx={{ color: "text.secondary" }}>
-              This area will eventually preview your featured projects, recent work,
-              or even a small stat card about your stack & tools.
+              This area will eventually preview your featured projects, recent
+              work, or even a small stat card about your stack & tools.
             </Typography>
           </Paper>
         </Box>

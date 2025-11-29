@@ -1,31 +1,6 @@
 import { Box, Typography, Paper, Chip, Stack, Button } from "@mui/material";
 import Grid from "@mui/material/Grid";
-
-const MOCK_PROJECTS = [
-  {
-    id: 1,
-    name: "Portfolio Website",
-    summary: "This site - a hub for my projects and experiments.",
-    tech: ["React", "TypeScript", "MUI", "Node (planned)"],
-    status: "In progress",
-  },
-  {
-    id: 2,
-    name: "Mizuki Assistant",
-    summary:
-      "A personal AI assistant project focused on tools, memory, and homelab integration.",
-    tech: ["Python", "OpenAI API", "Docker"],
-    status: "Prototype",
-  },
-  {
-    id: 3,
-    name: "Homelab Automation",
-    summary:
-      "Scripts and services to manage my self-hosted environment and media stack.",
-    tech: ["Linux", "Docker", "PowerShell"],
-    status: "Ongoing",
-  },
-];
+import { PROJECTS } from "../data/projects";
 
 export default function Projects() {
   return (
@@ -43,8 +18,8 @@ export default function Projects() {
       </Typography>
 
       <Grid container spacing={3}>
-        {MOCK_PROJECTS.map((project) => (
-          <Grid size={{xs:12, md:6}} key={project.id}>
+        {PROJECTS.map((project) => (
+          <Grid size={{ xs: 12, md: 6 }} key={project.id}>
             <Paper
               sx={{
                 p: 3,

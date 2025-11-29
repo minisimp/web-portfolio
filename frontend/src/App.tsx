@@ -6,7 +6,7 @@ function App() {
       sx={{
         minHeight: "100vh",
         display: "flex",
-        alightItems: "center",
+        alignItems: "center",
         justifyContent: "center",
         flexDirection: "column",
         gap: 2,

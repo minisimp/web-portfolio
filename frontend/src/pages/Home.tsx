@@ -1,28 +1,15 @@
 import { Box, Button, Stack, Typography, Paper, Chip } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import { Link as RouterLink } from "react-router-dom";
+import { PROJECTS } from "../data/projects.ts";
 
-const FEATURED_PROJECTS = [
-  {
-    id: 1,
-    name: "Portfolio Website",
-    summary: "This site - a hub for my projects and future full-stack apps.",
-    tech: ["React", "TypeScript", "MUI"],
-  },
-  {
-    id: 2,
-    name: "Mizuki Assistant",
-    summary:
-      "Personal AI assistant project focused on tools, memory, and homelab integration.",
-    tech: ["Python", "OpenAI API", "Docker"],
-  },
-];
+const featured_projects = PROJECTS.filter((p) => p.featured);
 
 export default function Home() {
   return (
     <Box
       sx={{
-        py: 8,
+        py: { xs: 6, md: 8 },
       }}
     >
       <Stack
@@ -46,15 +33,15 @@ export default function Home() {
           >
             Hi, I&apos;m{" "}
             <Box component="span" sx={{ color: "primary.light" }}>
-              Aaron
+              Az
             </Box>
             . I build practical systems, not just demos.
           </Typography>
 
           <Typography variant="body1" sx={{ color: "text.secondary", mb: 4 }}>
-            IT consultant and aspiring web dev & AI tinkerer. I like turning messy,
-            real-world problems into clean, reliable tools that people actually
-            use.
+            IT consultant and aspiring web dev & AI tinkerer. I like turning
+            messy, real-world problems into clean, reliable tools that people
+            actually use.
           </Typography>
 
           <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
@@ -105,7 +92,7 @@ export default function Home() {
         </Box>
       </Stack>
 
-            {/* Featured Projects Section */}
+      {/* Featured Projects Section */}
       <Box sx={{ mt: 10 }}>
         <Stack
           direction="row"
@@ -127,125 +114,63 @@ export default function Home() {
         </Stack>
 
         <Grid container spacing={3}>
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Paper
-              sx={{
-                p: 3,
-                height: "100%",
-                display: "flex",
-                flexDirection: "column",
-                gap: 2,
-                borderRadius: 3,
-                border: "1px solid rgba(148, 163, 184, 0.3)",
-                background:
-                  "radial-gradient(circle at top left, rgba(157, 78, 221, 0.16), transparent 55%), #0b1220",
-                transition: "transform 150ms ease, box-shadow 150ms ease",
-                "&:hover": {
-                  transform: "translateY(-2px)",
-                  boxShadow: "0 18px 45px rgba(15, 23, 42, 0.9)",
-                },
-              }}
-            >
-              <Typography variant="subtitle2" sx={{ color: "text.secondary" }}>
-                Featured
-              </Typography>
-              <Typography variant="h6">Portfolio Website</Typography>
-              <Typography
-                variant="body2"
-                sx={{ color: "text.secondary", flexGrow: 1 }}
+          {featured_projects.map((project, index) => (
+            <Grid size={{ xs: 12, md: 6 }} key={project.id}>
+              <Paper
+                sx={{
+                  p: 3,
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 2,
+                  borderRadius: 3,
+                  border: "1px solid rgba(148, 163, 184, 0.3)",
+                  background:
+                    index === 0
+                      ? "radial-gradient(circle at top left, rgba(157, 78, 221, 0.16), transparent 55%), #0b1220"
+                      : "radial-gradient(circle at top right, rgba(72,149,239,0.16), transparent 55%), #0b1220",
+                  transition: "transform 150ms ease, box-shadow 150ms ease",
+                  "&:hover": {
+                    transform: "translateY(-2px)",
+                    boxShadow: "0 18px 45px rgba(15, 23, 42, 0.9)",
+                  },
+                }}
               >
-                This site – a hub for my projects and upcoming full-stack apps.
-              </Typography>
+                <Typography
+                  variant="subtitle2"
+                  sx={{ color: "text.secondary" }}
+                >
+                  Featured
+                </Typography>
+                <Typography variant="h6">{project.name}</Typography>
+                <Typography
+                  variant="body2"
+                  sx={{ color: "text.secondary", flexGrow: 1 }}
+                >
+                  {project.summary}
+                </Typography>
 
-              <Stack
-                direction="row"
-                spacing={1}
-                flexWrap="wrap"
-                sx={{ rowGap: 1, mt: 1 }}
-              >
-                <Chip
-                  label="React"
-                  size="small"
-                  sx={{
-                    fontSize: 11,
-                    bgcolor: "rgba(148, 163, 184, 0.15)",
-                  }}
-                />
-                <Chip
-                  label="TypeScript"
-                  size="small"
-                  sx={{
-                    fontSize: 11,
-                    bgcolor: "rgba(148, 163, 184, 0.15)",
-                  }}
-                />
-                <Chip
-                  label="MUI"
-                  size="small"
-                  sx={{
-                    fontSize: 11,
-                    bgcolor: "rgba(148, 163, 184, 0.15)",
-                  }}
-                />
-              </Stack>
-            </Paper>
-          </Grid>
-
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Paper
-              sx={{
-                p: 3,
-                height: "100%",
-                display: "flex",
-                flexDirection: "column",
-                gap: 2,
-                borderRadius: 3,
-                border: "1px solid rgba(148, 163, 184, 0.3)",
-                background:
-                  "radial-gradient(circle at top right, rgba(72,149,239,0.16), transparent 55%), #0b1220",
-                transition: "transform 150ms ease, box-shadow 150ms ease",
-                "&:hover": {
-                  transform: "translateY(-2px)",
-                  boxShadow: "0 18px 45px rgba(15, 23, 42, 0.9)",
-                },
-              }}
-            >
-              <Typography variant="subtitle2" sx={{ color: "text.secondary" }}>
-                Featured
-              </Typography>
-              <Typography variant="h6">Mizuki Assistant</Typography>
-              <Typography
-                variant="body2"
-                sx={{ color: "text.secondary", flexGrow: 1 }}
-              >
-                A personal AI assistant project integrating tools, memory, and
-                homelab systems.
-              </Typography>
-
-              <Stack
-                direction="row"
-                spacing={1}
-                flexWrap="wrap"
-                sx={{ rowGap: 1, mt: 1 }}
-              >
-                <Chip
-                  label="Python"
-                  size="small"
-                  sx={{ fontSize: 11, bgcolor: "rgba(148, 163, 184, 0.15)" }}
-                />
-                <Chip
-                  label="OpenAI API"
-                  size="small"
-                  sx={{ fontSize: 11, bgcolor: "rgba(148, 163, 184, 0.15)" }}
-                />
-                <Chip
-                  label="Docker"
-                  size="small"
-                  sx={{ fontSize: 11, bgcolor: "rgba(148, 163, 184, 0.15)" }}
-                />
-              </Stack>
-            </Paper>
-          </Grid>
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  flexWrap="wrap"
+                  sx={{ rowGap: 1, mt: 1 }}
+                >
+                  {project.tech.map((t) => (
+                    <Chip
+                      key={t}
+                      label={t}
+                      size="small"
+                      sx={{
+                        fontSize: 11,
+                        bgcolor: "rgba(148, 163, 184, 0.15)",
+                      }}
+                    />
+                  ))}
+                </Stack>
+              </Paper>
+            </Grid>
+          ))}
         </Grid>
       </Box>
 
@@ -283,7 +208,6 @@ export default function Home() {
           ))}
         </Stack>
       </Box>
-
     </Box>
   );
 }

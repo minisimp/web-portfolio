@@ -32,29 +32,42 @@ export default function Layout() {
       <AppBar position="sticky" color="transparent">
         <Container maxWidth="lg">
           <Toolbar disableGutters sx={{ py: 1.2 }}>
-            <img
-              src={Logo}
-              alt="Az Logo"
-              style={{
-                width: 32,
-                height: 32,
-                filter: "drop-shadow(0 0 4px #9d4edd)",
-              }}
-            ></img>
-
-            <Typography
-              variant="h6"
+            <Stack
+              component={RouterLink}
+              to="/"
+              direction="row"
+              alignItems="center"
+              spacing={1.5}
               sx={{
-                flexGrow: 1,
-                fontWeight: 600,
-                letterSpacing: 0.5,
-                paddingLeft: 2,
-                color: "primary.light",
+                textDecoration: "none",
+                color: "inherit",
+                mr: 1,
+                "&:hover": { opacity: 0.85 },
               }}
             >
-              Az Portfolio
-            </Typography>
+              <img
+                src={Logo}
+                alt="Az Logo"
+                style={{
+                  width: 32,
+                  height: 32,
+                  filter: "drop-shadow(0 0 4px #9d4edd)",
+                }}
+              ></img>
 
+              <Typography
+                variant="h6"
+                sx={{
+                  flexGrow: 1,
+                  fontWeight: 600,
+                  letterSpacing: 0.5,
+                  color: "primary.light",
+                }}
+              >
+                Az Portfolio
+              </Typography>
+            </Stack>
+            <Box sx={{ flexGrow: 1 }} />
             <Stack direction="row" spacing={1}>
               {NAV_LINKS.map((link) => {
                 const isActive = location.pathname === link.to;

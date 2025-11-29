@@ -1,5 +1,5 @@
 import { Box, Typography, Paper, Chip, Stack, Button } from "@mui/material";
-import Grid from "@mui/material/GridLegacy";
+import Grid from "@mui/material/Grid";
 
 const MOCK_PROJECTS = [
   {
@@ -44,7 +44,7 @@ export default function Projects() {
 
       <Grid container spacing={3}>
         {MOCK_PROJECTS.map((project) => (
-          <Grid item={true} xs={12} md={6} key={project.id}>
+          <Grid size={{xs:12, md:6}} key={project.id}>
             <Paper
               sx={{
                 p: 3,

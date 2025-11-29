@@ -8,6 +8,7 @@ import {
   Box,
 } from "@mui/material";
 import { Outlet, Link as RouterLink, useLocation } from "react-router-dom";
+import Logo from "../assets/logo.svg";
 
 const NAV_LINKS = [
   { label: "Home", to: "/" },
@@ -30,13 +31,24 @@ export default function Layout() {
     >
       <AppBar position="sticky" color="transparent">
         <Container maxWidth="lg">
-          <Toolbar disableGutters sx={{ py: 1 }}>
+          <Toolbar disableGutters sx={{ py: 1.2 }}>
+            <img
+              src={Logo}
+              alt="Az Logo"
+              style={{
+                width: 32,
+                height: 32,
+                filter: "drop-shadow(0 0 4px #9d4edd)",
+              }}
+            ></img>
+
             <Typography
               variant="h6"
               sx={{
                 flexGrow: 1,
                 fontWeight: 600,
                 letterSpacing: 0.5,
+                paddingLeft: 2,
                 color: "primary.light",
               }}
             >

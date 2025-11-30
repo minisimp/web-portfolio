@@ -1,10 +1,11 @@
 import { Router } from "express";
 import { Project, ProjectSchema, ProjectArraySchema } from "../schema/projects";
+import { supabase } from "../lib/supabase";
 
 const router = Router();
 
 // sample data
-const PROJECTS: Project[] = [
+/*const PROJECTS: Project[] = [
   {
     id: 1,
     slug: "portfolio-website",
@@ -43,29 +44,46 @@ const PROJECTS: Project[] = [
     featured: false,
   },
 ];
+*/
+router.get("/", async (req, res) => {
+  const { data, error } = await supabase
+    .from("projects")
+    .select("id, slug, name, summary, tech, status, featured")
+    .order("id", { ascending: true });
+  if (error) {
+    console.error("Supabase error:", error);
+    return res.status(500).json({ error: "failed to fetch projects" });
+  }
 
-router.get("/", (req, res) => {
-  const parsed = ProjectArraySchema.safeParse(PROJECTS);
+  const parsed = ProjectArraySchema.safeParse(data);
   if (!parsed.success) {
     console.error("Invalid project data:", parsed.error);
     return res.status(500).json({ error: "Internal server error" });
   }
 
-  res.json(PROJECTS);
+  res.json(parsed.data);
 });
 
-router.get("/:slug", (req, res) => {
-  const { slug } = req.params;
+router.get("/:slug", async (req, res) => {
+  const slug = req.params.slug;
+  const { data, error } = await supabase
+    .from("projects")
+    .select("id, slug, name, summary, tech, status, featured")
+    .eq("slug", slug)
+    .maybeSingle();
+  if (error) {
+    console.error("Supabase error:", error);
+    return res.status(500).json({ error: "Failed to fetch project" });
+  }
 
-  const project = PROJECTS.find((p) => p.slug === slug);
-  if (!project) {
+  if (!data) {
     return res.status(404).json({ error: "Project not found" });
   }
 
-  const parsed = ProjectSchema.safeParse(project);
+  const parsed = ProjectSchema.safeParse(data);
   if (!parsed.success) {
     console.error("Invalid project data for slug:", parsed.error);
-    return res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({ error: "Internal project data" });
   }
 
   res.json(parsed.data);

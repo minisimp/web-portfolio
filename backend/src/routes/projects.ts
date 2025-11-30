@@ -33,6 +33,15 @@ const PROJECTS: Project[] = [
     tech: ["Linux", "Docker", "PowerShell"],
     status: "Ongoing",
   },
+  {
+    id: 4,
+    slug: "Crazy-Project",
+    name: "Crazy Project",
+    summary: "This is really out there",
+    tech: ["Linux", "Docker", "PowerShell"],
+    status: "Ongoing",
+    featured: false,
+  },
 ];
 
 router.get("/", (req, res) => {

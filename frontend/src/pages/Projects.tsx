@@ -1,8 +1,68 @@
-import { Box, Typography, Paper, Chip, Stack, Button } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Paper,
+  Chip,
+  Stack,
+  Button,
+  CircularProgress,
+} from "@mui/material";
 import Grid from "@mui/material/Grid";
-import { PROJECTS } from "../data/projects";
+import type { Project } from "../types/project";
+import { useEffect, useState } from "react";
+import { fetchProjects } from "../api/projects";
 
 export default function Projects() {
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const data = await fetchProjects();
+        if (!cancelled) {
+          setProjects(data);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setError(err instanceof Error ? err.message : "unknown error");
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  if (loading) {
+    return (
+      <Box sx={{ py: 6, display: "Flex", JustifyContent: "center" }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box sx={{ py: 6 }}>
+        <Typography variant="h3" gutterBottom>
+          Projects
+        </Typography>
+        <Typography sx={{ mb: 2 }} color="error">
+          Failed to load projects: {error}
+        </Typography>
+      </Box>
+    );
+  }
+
   return (
     <Box sx={{ py: 6 }}>
       <Typography variant="h3" gutterBottom>
@@ -18,7 +78,7 @@ export default function Projects() {
       </Typography>
 
       <Grid container spacing={3}>
-        {PROJECTS.map((project) => (
+        {projects.map((project) => (
           <Grid size={{ xs: 12, md: 6 }} key={project.id}>
             <Paper
               sx={{

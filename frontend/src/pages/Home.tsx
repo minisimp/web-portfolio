@@ -1,11 +1,71 @@
-import { Box, Button, Stack, Typography, Paper, Chip } from "@mui/material";
+import {
+  Box,
+  Button,
+  Stack,
+  Typography,
+  Paper,
+  Chip,
+  CircularProgress,
+} from "@mui/material";
 import Grid from "@mui/material/Grid";
 import { Link as RouterLink } from "react-router-dom";
-import { PROJECTS } from "../data/projects.ts";
-
-const featured_projects = PROJECTS.filter((p) => p.featured);
+import type { Project } from "../types/project";
+import { useEffect, useState } from "react";
+import { fetchProjects } from "../api/projects";
 
 export default function Home() {
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const data = await fetchProjects();
+        if (!cancelled) {
+          setProjects(data);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setError(err instanceof Error ? err.message : "unknown error");
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  if (loading) {
+    return (
+      <Box sx={{ py: 6, display: "Flex", JustifyContent: "center" }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box sx={{ py: 6 }}>
+        <Typography variant="h3" gutterBottom>
+          Projects
+        </Typography>
+        <Typography sx={{ mb: 2 }} color="error">
+          Failed to load projects: {error}
+        </Typography>
+      </Box>
+    );
+  }
+
+  const featuredProjects = projects.filter((p) => p.featured);
+
   return (
     <Box
       sx={{
@@ -114,7 +174,7 @@ export default function Home() {
         </Stack>
 
         <Grid container spacing={3}>
-          {featured_projects.map((project, index) => (
+          {featuredProjects.map((project, index) => (
             <Grid size={{ xs: 12, md: 6 }} key={project.id}>
               <Paper
                 sx={{

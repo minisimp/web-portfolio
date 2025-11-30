@@ -1,50 +1,14 @@
 import { Router } from "express";
-import { Project, ProjectSchema, ProjectArraySchema } from "../schema/projects";
+import {
+  Project,
+  ProjectSchema,
+  ProjectArraySchema,
+  ProjectInputSchema,
+} from "../schema/projects";
 import { supabase } from "../lib/supabase";
 
 const router = Router();
 
-// sample data
-/*const PROJECTS: Project[] = [
-  {
-    id: 1,
-    slug: "portfolio-website",
-    name: "Portfolio Website",
-    summary: "This site - a hub for my projects and upcoming full-stack apps.",
-    tech: ["React", "TypeScript", "MUI", "Node (planned)"],
-    status: "In progress",
-    featured: true,
-  },
-  {
-    id: 2,
-    slug: "mizuki-assistant",
-    name: "Mizuki Assistant",
-    summary:
-      "A personal AI assistant project focused on tools, memory, and homelab integration.",
-    tech: ["Python", "OpenAI API", "Docker"],
-    status: "Prototype",
-    featured: true,
-  },
-  {
-    id: 3,
-    slug: "homelab-automation",
-    name: "Homelab Automation",
-    summary:
-      "Scripts and services to manage my self-hosted environment and media stack.",
-    tech: ["Linux", "Docker", "PowerShell"],
-    status: "Ongoing",
-  },
-  {
-    id: 4,
-    slug: "Crazy-Project",
-    name: "Crazy Project",
-    summary: "This is really out there",
-    tech: ["Linux", "Docker", "PowerShell"],
-    status: "Ongoing",
-    featured: false,
-  },
-];
-*/
 router.get("/", async (req, res) => {
   const { data, error } = await supabase
     .from("projects")
@@ -87,6 +51,81 @@ router.get("/:slug", async (req, res) => {
   }
 
   res.json(parsed.data);
+});
+
+router.post("/", async (req, res) => {
+  const parsed = ProjectInputSchema.safeParse(req.body);
+
+  if (!parsed.success) {
+    return res
+      .status(400)
+      .json({ error: "Invalid project data", details: parsed.error });
+  }
+
+  const { data, error } = await supabase
+    .from("projects")
+    .insert(parsed.data)
+    .select("id, slug, name, summary, tech, status, featured")
+    .maybeSingle();
+
+  if (error) {
+    console.error("Supabase error:", error);
+    return res.status(500).json({ error: "Failed to create project" });
+  }
+});
+
+router.put("/:id", async (req, res) => {
+  const id = Number(req.params.id);
+  if (Number.isNaN(id)) {
+    return res.status(400).json({ error: "Invalid project ID" });
+  }
+
+  const parsed = ProjectInputSchema.safeParse(req.body);
+  if (!parsed.success) {
+    return res
+      .status(400)
+      .json({ error: "Invalid project data", details: parsed.error });
+  }
+
+  const { data, error } = await supabase
+    .from("projects")
+    .update(parsed.data)
+    .eq("id", id)
+    .select("id, slug, name, summary, tech, status, featured")
+    .maybeSingle();
+
+  if (error) {
+    console.error("Supabase error:", error);
+    return res.status(500).json({ error: "Failed to update project" });
+  }
+
+  if (!data) {
+    return res.status(404).json({ error: "Project not found" });
+  }
+
+  const validated = ProjectSchema.safeParse(data);
+  if (!validated.success) {
+    console.error("Invalid project data after update:", validated.error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+
+  return res.json(validated.data);
+});
+
+router.delete("/:id", async (req, res) => {
+  const id = Number(req.params.id);
+  if (Number.isNaN(id)) {
+    return res.status(400).json({ error: "Invalid project ID" });
+  }
+
+  const { error } = await supabase.from("projects").delete().eq("id", id);
+
+  if (error) {
+    console.error("Supabase error:", error);
+    return res.status(500).json({ error: "Failed to delete project" });
+  }
+
+  return res.status(204).send();
 });
 
 export default router;

@@ -12,4 +12,6 @@ export const ProjectSchema = z.object({
 
 export const ProjectArraySchema = z.array(ProjectSchema);
 
+export const ProjectInputSchema = ProjectSchema.omit({ id: true });
+
 export type Project = z.infer<typeof ProjectSchema>;

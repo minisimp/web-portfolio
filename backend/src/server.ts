@@ -1,9 +1,11 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import projectsRouter from "./routes/projects";
 
 dotenv.config();
+
+// Import routes with after setting up environment variables
+import projectsRouter from "./routes/projects";
 
 const app = express();
 app.use(cors());

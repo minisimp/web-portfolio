@@ -6,126 +6,153 @@ import {
   ProjectInputSchema,
 } from "../schema/projects";
 import { supabase } from "../lib/supabase";
+import { asyncHandler } from "../utils/asyncHandler";
+import { requireAdmin } from "../middleware/requireAdmin";
 
 const router = Router();
 
-router.get("/", async (req, res) => {
-  const { data, error } = await supabase
-    .from("projects")
-    .select("id, slug, name, summary, tech, status, featured")
-    .order("id", { ascending: true });
-  if (error) {
-    console.error("Supabase error:", error);
-    return res.status(500).json({ error: "failed to fetch projects" });
-  }
+// Public routes
+router.get(
+  "/",
+  asyncHandler(async (req, res) => {
+    const { data, error } = await supabase
+      .from("projects")
+      .select("id, slug, name, summary, tech, status, featured")
+      .order("id", { ascending: true });
 
-  const parsed = ProjectArraySchema.safeParse(data);
-  if (!parsed.success) {
-    console.error("Invalid project data:", parsed.error);
-    return res.status(500).json({ error: "Internal server error" });
-  }
+    if (error) {
+      throw error; //goes to centralized error handler
+    }
 
-  res.json(parsed.data);
-});
+    const parsed = ProjectArraySchema.safeParse(data);
+    if (!parsed.success) {
+      console.error("Invalid project data:", parsed.error);
+      return res.status(500).json({ error: "Internal server error" });
+    }
 
-router.get("/:slug", async (req, res) => {
-  const slug = req.params.slug;
-  const { data, error } = await supabase
-    .from("projects")
-    .select("id, slug, name, summary, tech, status, featured")
-    .eq("slug", slug)
-    .maybeSingle();
-  if (error) {
-    console.error("Supabase error:", error);
-    return res.status(500).json({ error: "Failed to fetch project" });
-  }
+    return res.json(parsed.data);
+  })
+);
 
-  if (!data) {
-    return res.status(404).json({ error: "Project not found" });
-  }
+router.get(
+  "/:slug",
+  asyncHandler(async (req, res) => {
+    const slug = req.params.slug;
+    const { data, error } = await supabase
+      .from("projects")
+      .select("id, slug, name, summary, tech, status, featured")
+      .eq("slug", slug)
+      .maybeSingle();
 
-  const parsed = ProjectSchema.safeParse(data);
-  if (!parsed.success) {
-    console.error("Invalid project data for slug:", parsed.error);
-    return res.status(500).json({ error: "Internal project data" });
-  }
+    if (error) {
+      throw error;
+    }
 
-  res.json(parsed.data);
-});
+    if (!data) {
+      return res.status(404).json({ error: "Project not found" });
+    }
 
-router.post("/", async (req, res) => {
-  const parsed = ProjectInputSchema.safeParse(req.body);
+    const parsed = ProjectSchema.safeParse(data);
+    if (!parsed.success) {
+      console.error("Invalid project data for slug:", parsed.error);
+      return res.status(500).json({ error: "Internal project data" });
+    }
 
-  if (!parsed.success) {
-    return res
-      .status(400)
-      .json({ error: "Invalid project data", details: parsed.error });
-  }
+    return res.json(parsed.data);
+  })
+);
 
-  const { data, error } = await supabase
-    .from("projects")
-    .insert(parsed.data)
-    .select("id, slug, name, summary, tech, status, featured")
-    .maybeSingle();
+// Admin routes
+router.post(
+  "/",
+  requireAdmin,
+  asyncHandler(async (req, res) => {
+    const parsed = ProjectInputSchema.safeParse(req.body);
 
-  if (error) {
-    console.error("Supabase error:", error);
-    return res.status(500).json({ error: "Failed to create project" });
-  }
-});
+    if (!parsed.success) {
+      return res
+        .status(400)
+        .json({ error: "Invalid project data", details: parsed.error });
+    }
 
-router.put("/:id", async (req, res) => {
-  const id = Number(req.params.id);
-  if (Number.isNaN(id)) {
-    return res.status(400).json({ error: "Invalid project ID" });
-  }
+    const { data, error } = await supabase
+      .from("projects")
+      .insert(parsed.data)
+      .select("id, slug, name, summary, tech, status, featured")
+      .maybeSingle();
 
-  const parsed = ProjectInputSchema.safeParse(req.body);
-  if (!parsed.success) {
-    return res
-      .status(400)
-      .json({ error: "Invalid project data", details: parsed.error });
-  }
+    if (error) {
+      throw error;
+    }
 
-  const { data, error } = await supabase
-    .from("projects")
-    .update(parsed.data)
-    .eq("id", id)
-    .select("id, slug, name, summary, tech, status, featured")
-    .maybeSingle();
+    const validated = ProjectSchema.safeParse(data);
+    if (!validated.success) {
+      console.error("Invalid project data after insertion:", validated.error);
+      return res.status(500).json({ error: "Internal server error" });
+    }
 
-  if (error) {
-    console.error("Supabase error:", error);
-    return res.status(500).json({ error: "Failed to update project" });
-  }
+    return res.status(201).json(validated.data);
+  })
+);
 
-  if (!data) {
-    return res.status(404).json({ error: "Project not found" });
-  }
+router.put(
+  "/:id",
+  requireAdmin,
+  asyncHandler(async (req, res) => {
+    const id = Number(req.params.id);
+    if (Number.isNaN(id)) {
+      return res.status(400).json({ error: "Invalid project ID" });
+    }
 
-  const validated = ProjectSchema.safeParse(data);
-  if (!validated.success) {
-    console.error("Invalid project data after update:", validated.error);
-    return res.status(500).json({ error: "Internal server error" });
-  }
+    const parsed = ProjectInputSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res
+        .status(400)
+        .json({ error: "Invalid project data", details: parsed.error });
+    }
 
-  return res.json(validated.data);
-});
+    const { data, error } = await supabase
+      .from("projects")
+      .update(parsed.data)
+      .eq("id", id)
+      .select("id, slug, name, summary, tech, status, featured")
+      .maybeSingle();
 
-router.delete("/:id", async (req, res) => {
-  const id = Number(req.params.id);
-  if (Number.isNaN(id)) {
-    return res.status(400).json({ error: "Invalid project ID" });
-  }
+    if (error) {
+      throw error;
+    }
 
-  const { error } = await supabase.from("projects").delete().eq("id", id);
+    if (!data) {
+      return res.status(404).json({ error: "Project not found" });
+    }
 
-  if (error) {
-    console.error("Supabase error:", error);
-    return res.status(500).json({ error: "Failed to delete project" });
-  }
+    const validated = ProjectSchema.safeParse(data);
+    if (!validated.success) {
+      console.error("Invalid project data after update:", validated.error);
+      return res.status(500).json({ error: "Internal server error" });
+    }
 
-  return res.status(204).send();
-});
+    return res.status(201).json(validated.data);
+  })
+);
+
+router.delete(
+  "/:id",
+  requireAdmin,
+  asyncHandler(async (req, res) => {
+    const id = Number(req.params.id);
+    if (Number.isNaN(id)) {
+      return res.status(400).json({ error: "Invalid project ID" });
+    }
+
+    const { error } = await supabase.from("projects").delete().eq("id", id);
+
+    if (error) {
+      throw error;
+    }
+
+    return res.status(204).send();
+  })
+);
 
 export default router;

@@ -35,6 +35,7 @@ export default function AdminProjects() {
   const [form, setForm] = useState<Omit<Project, "id">>(EMPTY_FORM);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [adminToken, setAdminToken] = useState("");
 
   async function loadProjects() {
     setLoading(true);
@@ -75,10 +76,10 @@ export default function AdminProjects() {
     e.preventDefault();
     try {
       if (editingId == null) {
-        const created = await createProject(form);
+        const created = await createProject(form, adminToken);
         setProjects((prev) => [...prev, created]);
       } else {
-        const updated = await updateProject(editingId, form);
+        const updated = await updateProject(editingId, form, adminToken);
         setProjects((prev) =>
           prev.map((p) => (p.id === editingId ? updated : p))
         );
@@ -106,7 +107,7 @@ export default function AdminProjects() {
   async function handleDelete(id: number) {
     if (!confirm("Delete this project?")) return;
     try {
-      await deleteProject(id);
+      await deleteProject(id, adminToken);
       setProjects((prev) => prev.filter((p) => p.id !== id));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to delete project");
@@ -116,7 +117,7 @@ export default function AdminProjects() {
   return (
     <Box sx={{ py: 6 }}>
       <Typography variant="h3" gutterBottom>
-        Admin – Projects
+        Admin - Projects
       </Typography>
 
       {error && (
@@ -130,7 +131,21 @@ export default function AdminProjects() {
         <Typography variant="h6" sx={{ mb: 2 }}>
           {editingId ? "Edit project" : "Add new project"}
         </Typography>
-
+        <Paper sx={{ p: 2, mb: 3 }}>
+          <Stack spacing={1}>
+            <Typography variant="subtitle2">Admin Token</Typography>
+            <TextField
+              type="password"
+              size="small"
+              value={adminToken}
+              onChange={(e) => setAdminToken(e.target.value)}
+              placeholder="Enter admin token"
+            />
+            <Typography variant="caption" sx={{ color: "text.secondary" }}>
+              Required for create / update / delete. Keep this private.
+            </Typography>
+          </Stack>
+        </Paper>
         <Stack component="form" spacing={2} onSubmit={handleSubmit}>
           <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
             <TextField

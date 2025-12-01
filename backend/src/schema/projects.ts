@@ -1,5 +1,22 @@
 import { z } from "zod";
 
+const UrlString = z
+  .string()
+  .trim()
+  .refine(
+    (val) => {
+      try {
+        new URL(val);
+        return true;
+      } catch {
+        return false;
+      }
+    },
+    { message: "Invalid URL format" }
+  );
+
+const NullableUrlString = z.union([UrlString, z.null()]);
+
 export const ProjectSchema = z.object({
   id: z.number(),
   slug: z.string(),
@@ -11,9 +28,9 @@ export const ProjectSchema = z.object({
 
   //Optional fields
   description: z.string().optional(),
-  demo_url: z.string().url().optional(),
-  repo_url: z.string().url().optional(),
-  hero_image_url: z.string().url().optional(),
+  demo_url: NullableUrlString.optional(),
+  repo_url: NullableUrlString.optional(),
+  hero_image_url: NullableUrlString.optional(),
 });
 
 export const ProjectArraySchema = z.array(ProjectSchema);

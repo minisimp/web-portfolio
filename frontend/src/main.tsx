@@ -9,6 +9,7 @@ import Projects from "./pages/Projects.tsx";
 import Contact from "./pages/Contact.tsx";
 import About from "./pages/About.tsx";
 import AdminProjects from "./pages/AdminProjects.tsx";
+import ProjectDetails from "./pages/ProjectDetails.tsx";
 
 import { ThemeProvider, CssBaseline, createTheme } from "@mui/material";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -72,6 +73,7 @@ const router = createBrowserRouter([
       { path: "/contact", element: <Contact /> },
       { path: "/about", element: <About /> },
       { path: "/admin", element: <AdminProjects /> },
+      { path: "/projects/:slug", element: <ProjectDetails /> },
     ],
   },
 ]);

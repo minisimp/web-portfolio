@@ -11,6 +11,7 @@ import Grid from "@mui/material/Grid";
 import type { Project } from "../types/project";
 import { useEffect, useState } from "react";
 import { fetchProjects } from "../api/projects";
+import { Link as RouterLink } from "react-router-dom";
 
 export default function Projects() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -135,8 +136,13 @@ export default function Projects() {
               </Stack>
 
               <Box sx={{ mt: 2 }}>
-                <Button size="small" variant="outlined" disabled>
-                  View details (coming soon)
+                <Button
+                  component={RouterLink}
+                  to={`/projects/${project.slug}`}
+                  size="small"
+                  variant="outlined"
+                >
+                  View details
                 </Button>
               </Box>
             </Paper>

@@ -177,6 +177,8 @@ export default function Home() {
           {featuredProjects.map((project, index) => (
             <Grid size={{ xs: 12, md: 6 }} key={project.id}>
               <Paper
+                component={RouterLink}
+                to={`/projects/${project.slug}`}
                 sx={{
                   p: 3,
                   height: "100%",
@@ -185,6 +187,7 @@ export default function Home() {
                   gap: 2,
                   borderRadius: 3,
                   border: "1px solid rgba(148, 163, 184, 0.3)",
+                  textDecoration: "none",
                   background:
                     index === 0
                       ? "radial-gradient(circle at top left, rgba(157, 78, 221, 0.16), transparent 55%), #0b1220"

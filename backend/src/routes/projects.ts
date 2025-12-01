@@ -17,7 +17,9 @@ router.get(
   asyncHandler(async (req, res) => {
     const { data, error } = await supabase
       .from("projects")
-      .select("id, slug, name, summary, tech, status, featured")
+      .select(
+        "id, slug, name, summary, tech, status, featured, description, demo_url, repo_url, hero_image_url"
+      )
       .order("id", { ascending: true });
 
     if (error) {
@@ -40,7 +42,9 @@ router.get(
     const slug = req.params.slug;
     const { data, error } = await supabase
       .from("projects")
-      .select("id, slug, name, summary, tech, status, featured")
+      .select(
+        "id, slug, name, summary, tech, status, featured, description, demo_url, repo_url, hero_image_url"
+      )
       .eq("slug", slug)
       .maybeSingle();
 
@@ -78,7 +82,9 @@ router.post(
     const { data, error } = await supabase
       .from("projects")
       .insert(parsed.data)
-      .select("id, slug, name, summary, tech, status, featured")
+      .select(
+        "id, slug, name, summary, tech, status, featured, description, demo_url, repo_url, hero_image_url"
+      )
       .maybeSingle();
 
     if (error) {
@@ -115,7 +121,9 @@ router.put(
       .from("projects")
       .update(parsed.data)
       .eq("id", id)
-      .select("id, slug, name, summary, tech, status, featured")
+      .select(
+        "id, slug, name, summary, tech, status, featured, description, demo_url, repo_url, hero_image_url"
+      )
       .maybeSingle();
 
     if (error) {

@@ -4,7 +4,6 @@ import {
   Paper,
   Chip,
   Stack,
-  Button,
   CircularProgress,
 } from "@mui/material";
 import Grid from "@mui/material/Grid";
@@ -82,20 +81,37 @@ export default function Projects() {
         {projects.map((project) => (
           <Grid size={{ xs: 12, md: 6 }} key={project.id}>
             <Paper
-              sx={{
-                p: 3,
-                height: "100%",
-                display: "flex",
-                flexDirection: "column",
-                gap: 2,
-              }}
+              component={RouterLink}
+            to={`/projects/${project.slug}`}
+            sx={{
+              p: 3,
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+              borderRadius: 3,
+              textDecoration: "none",
+              color: "inherit",
+              border: "1px solid rgba(148, 163, 184, 0.25)",
+              background:
+                "radial-gradient(circle at top left, rgba(148, 163, 184, 0.08), transparent 55%), #020617",
+              transition: "transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease",
+              "&:hover": {
+                transform: "translateY(-2px)",
+                boxShadow: "0 18px 45px rgba(15, 23, 42, 0.9)",
+                borderColor: "rgba(148, 163, 184, 0.5)",
+                cursor: "pointer",
+              },
+            }}
             >
               <Stack
                 direction="row"
                 justifyContent="space-between"
                 alignItems="center"
               >
-                <Typography variant="h6">{project.name}</Typography>
+                <Typography variant="h6" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  {project.name}
+                </Typography>
                 <Chip
                   size="small"
                   label={project.status}
@@ -111,7 +127,14 @@ export default function Projects() {
 
               <Typography
                 variant="body2"
-                sx={{ color: "text.secondary", flexGrow: 1 }}
+                sx={{
+                  color: "text.secondary",
+                  flexGrow: 1,
+                  display: "-webkit-box",
+                  WebkitLineClamp: 3,
+                  WebkitBoxOrient: "vertical",
+                  overflow: "hidden",
+                }}
               >
                 {project.summary}
               </Typography>
@@ -134,17 +157,6 @@ export default function Projects() {
                   />
                 ))}
               </Stack>
-
-              <Box sx={{ mt: 2 }}>
-                <Button
-                  component={RouterLink}
-                  to={`/projects/${project.slug}`}
-                  size="small"
-                  variant="outlined"
-                >
-                  View details
-                </Button>
-              </Box>
             </Paper>
           </Grid>
         ))}

@@ -99,8 +99,7 @@ export default function Home() {
           </Typography>
 
           <Typography variant="body1" sx={{ color: "text.secondary", mb: 4 }}>
-            IT consultant and aspiring web dev & AI tinkerer. I like turning
-            messy, real-world problems into clean, reliable tools that people
+            IT consultant and aspiring web dev. I like turning real-world problems into clean, reliable tools that people
             actually use.
           </Typography>
 

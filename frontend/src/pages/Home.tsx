@@ -125,30 +125,148 @@ export default function Home() {
         </Box>
 
         {/* Right side – visual */}
-        <Box sx={{ flex: 1, width: "100%" }}>
-          <Paper
-            sx={{
-              p: 3,
-              height: "100%",
-              background:
-                "radial-gradient(circle at top left, rgba(247,37,133,0.22), transparent 55%), radial-gradient(circle at bottom right, rgba(72,149,239,0.3), transparent 55%)",
-            }}
-          >
-            <Typography
-              variant="subtitle2"
-              sx={{ mb: 2, color: "text.secondary" }}
-            >
-              Coming soon
-            </Typography>
-            <Typography variant="h6" sx={{ mb: 1 }}>
-              Portfolio Dashboard
-            </Typography>
-            <Typography variant="body2" sx={{ color: "text.secondary" }}>
-              This area will eventually preview your featured projects, recent
-              work, or even a small stat card about your stack & tools.
-            </Typography>
-          </Paper>
-        </Box>
+        <Box sx={{ flex: 1, width: "100%" }}> 
+          <Box
+  sx={{
+    width: "100%",
+    height: "100%",
+    minHeight: 320,
+    position: "relative",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  }}
+>
+  <Box
+    component="svg"
+    viewBox="0 0 600 420"
+    sx={{
+      width: "100%",
+      height: "100%",
+      opacity: 0.9,
+      overflow: "visible",
+    }}
+  >
+    <defs>
+      <linearGradient id="netLine" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stopColor="rgba(72,149,239,0.55)" />
+        <stop offset="1" stopColor="rgba(247,37,133,0.45)" />
+      </linearGradient>
+
+      <filter id="dotGlow">
+        <feGaussianBlur stdDeviation="2" result="blur" />
+        <feMerge>
+          <feMergeNode in="blur" />
+          <feMergeNode in="SourceGraphic" />
+        </feMerge>
+      </filter>
+
+      <filter id="softGlow">
+        <feGaussianBlur stdDeviation="5" result="blur" />
+        <feMerge>
+          <feMergeNode in="blur" />
+          <feMergeNode in="SourceGraphic" />
+        </feMerge>
+      </filter>
+
+      <style>
+        {`
+          .line { stroke: url(#netLine); stroke-width: 2; opacity: 0.25; }
+          .lineStrong { stroke: url(#netLine); stroke-width: 2.5; opacity: 0.45; }
+          .node { fill: rgba(226,232,240,0.85); }
+          .nodeDim { fill: rgba(226,232,240,0.55); }
+          .label { fill: rgba(226,232,240,0.55); font-size: 12px; letter-spacing: 0.6px; }
+          .switchBody { fill: rgba(226,232,240,0.14); stroke: rgba(226,232,240,0.55); stroke-width: 1.2; }
+          .switchPort { fill: rgba(226,232,240,0.55); opacity: 0.75; }
+        `}
+      </style>
+    </defs>
+
+    {/* Pull the whole composition LEFT and scale slightly so it fills the gap */}
+    <g transform="translate(10, 34) scale(1.35)">
+      {/* WAN */}
+      <circle cx="90" cy="60" r="6" className="nodeDim" />
+      <text x="108" y="64" className="label">
+        WAN
+      </text>
+
+      {/* Router */}
+      <circle cx="180" cy="110" r="7" className="node" filter="url(#dotGlow)" />
+      <text x="198" y="114" className="label">
+        Router
+      </text>
+
+      {/* lines */}
+      <path d="M 90 60 L 180 110" className="line" />
+      <path d="M 180 110 L 280 160" className="lineStrong" />
+
+      {/* Switch icon */}
+      <g transform="translate(280, 160)">
+        <circle cx="0" cy="0" r="14" fill="rgba(72,149,239,0.10)" filter="url(#softGlow)" />
+        <rect x="-18" y="-12" width="36" height="24" rx="6" className="switchBody" />
+        <rect x="-12" y="-3" width="5" height="3" rx="1" className="switchPort" />
+        <rect x="-5" y="-3" width="5" height="3" rx="1" className="switchPort" />
+        <rect x="2" y="-3" width="5" height="3" rx="1" className="switchPort" />
+        <rect x="9" y="-3" width="5" height="3" rx="1" className="switchPort" />
+        <circle cx="14" cy="7" r="1.8" fill="rgba(247,37,133,0.55)" />
+      </g>
+      <text x="300" y="164" className="label">
+        Switch
+      </text>
+
+      {/* downstream (pulled slightly IN so it won't clip) */}
+      <circle cx="380" cy="110" r="6" className="nodeDim" />
+      <text x="398" y="114" className="label">
+        Prox
+      </text>
+
+      <circle cx="410" cy="190" r="6" className="nodeDim" />
+      <text x="428" y="194" className="label">
+        Ubuntu
+      </text>
+
+      <circle cx="355" cy="240" r="6" className="nodeDim" />
+      <text x="373" y="244" className="label">
+        NAS
+      </text>
+
+      <circle cx="290" cy="285" r="6" className="nodeDim" />
+      <text x="308" y="289" className="label">
+        Clients
+      </text>
+
+      <circle cx="225" cy="240" r="6" className="nodeDim" />
+      <text x="243" y="244" className="label">
+        Wi-Fi
+      </text>
+
+      {/* links */}
+      <path d="M 280 160 L 380 110" className="line" />
+      <path d="M 280 160 L 410 190" className="line" />
+      <path d="M 280 160 L 355 240" className="line" />
+      <path d="M 280 160 L 290 285" className="line" />
+      <path d="M 280 160 L 225 240" className="line" />
+
+      {/* Wi-Fi arcs */}
+      <path
+        d="M 225 240 m -18 0 a 18 18 0 0 1 36 0"
+        fill="none"
+        stroke="rgba(72,149,239,0.22)"
+        strokeWidth="2"
+      />
+      <path
+        d="M 225 240 m -28 0 a 28 28 0 0 1 56 0"
+        fill="none"
+        stroke="rgba(247,37,133,0.16)"
+        strokeWidth="2"
+      />
+    </g>
+  </Box>
+</Box>
+
+
+  
+        </Box> 
       </Stack>
 
       {/* Featured Projects Section */}
